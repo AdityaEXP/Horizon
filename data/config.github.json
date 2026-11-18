@@ -17,7 +17,7 @@
     "default_profile": "builder",
     "profile_settings": {
       "builder": {
-        "threshold": 6.5,
+        "threshold": 5.5,
         "topic_dedup": true
       }
     }
@@ -28,8 +28,8 @@
   "sources": {
     "hackernews": {
       "enabled": true,
-      "fetch_top_stories": 30,
-      "min_score": 200,
+      "fetch_top_stories": 60,
+      "min_score": 100,
       "category": "headlines",
       "profile": "builder"
     },
@@ -81,21 +81,21 @@
       },
       {
         "name": "Lobsters",
-        "url": "https://lobste.rs/rss",
+        "url": "https://lobste.rs/top/rss",
         "enabled": true,
         "category": "backend",
         "profile": "builder"
       },
       {
         "name": "Show HN",
-        "url": "https://hnrss.org/show?points=100",
+        "url": "https://hnrss.org/show?points=40",
         "enabled": true,
         "category": "money",
         "profile": "builder"
       },
       {
         "name": "Ask HN",
-        "url": "https://hnrss.org/ask?points=50",
+        "url": "https://hnrss.org/ask?points=25",
         "enabled": true,
         "category": "career",
         "profile": "builder"
