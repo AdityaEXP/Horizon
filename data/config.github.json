@@ -5,12 +5,12 @@
     "api_key_env": "GOOGLE_API_KEY",
     "temperature": 0.3,
     "max_tokens": 4096,
-    "throttle_sec": 2,
+    "throttle_sec": 4.5,
     "languages": [
       "en"
     ],
-    "analysis_concurrency": 2,
-    "enrichment_concurrency": 2
+    "analysis_concurrency": 1,
+    "enrichment_concurrency": 1
   },
   "processing": {
     "profiles_dir": "profiles",

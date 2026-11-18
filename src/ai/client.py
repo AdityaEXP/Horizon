@@ -1,7 +1,9 @@
 """AI client abstraction supporting multiple providers."""
 
+import asyncio
 import os
 import re
+import time
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 import httpx
@@ -542,6 +544,33 @@ class GeminiClient(AIClient):
         self.model = config.model
         self.temperature = config.temperature
         self.max_tokens = config.max_tokens
+        # Minimum gap between requests, shared by every Gemini client in the
+        # process, so free-tier requests-per-minute limits are respected.
+        self.min_interval = max(config.throttle_sec, 0.0)
+
+    _pace_lock: Optional[asyncio.Lock] = None
+    _last_call: float = 0.0
+
+    async def _pace(self) -> None:
+        if self.min_interval <= 0:
+            return
+        if GeminiClient._pace_lock is None:
+            GeminiClient._pace_lock = asyncio.Lock()
+        async with GeminiClient._pace_lock:
+            wait = GeminiClient._last_call + self.min_interval - time.monotonic()
+            if wait > 0:
+                await asyncio.sleep(wait)
+            GeminiClient._last_call = time.monotonic()
+
+    @staticmethod
+    def _retry_delay(error: Exception) -> Optional[float]:
+        msg = str(error)
+        if "429" not in msg and "RESOURCE_EXHAUSTED" not in msg:
+            return None
+        if "PerDay" in msg:
+            return None  # daily quota is gone; retrying won't help
+        match = re.search(r"retry in ([0-9.]+)s", msg)
+        return min(float(match.group(1)) + 1, 70.0) if match else 30.0
 
     async def complete(
         self,
@@ -564,16 +593,27 @@ class GeminiClient(AIClient):
         temperature = self.temperature if temperature is None else temperature
         max_tokens = self.max_tokens if max_tokens is None else max_tokens
 
-        response = await self.client.aio.models.generate_content(
-            model=self.model,
-            contents=user,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                temperature=temperature,
-                max_output_tokens=max_tokens,
-                response_mime_type="application/json"
-            )
-        )
+        attempts = 4
+        for attempt in range(attempts):
+            await self._pace()
+            try:
+                response = await self.client.aio.models.generate_content(
+                    model=self.model,
+                    contents=user,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system,
+                        temperature=temperature,
+                        max_output_tokens=max_tokens,
+                        response_mime_type="application/json"
+                    )
+                )
+                break
+            except Exception as e:
+                delay = self._retry_delay(e)
+                if delay is None or attempt == attempts - 1:
+                    raise
+                logger.warning("Gemini rate limit hit; retrying in %.0fs", delay)
+                await asyncio.sleep(delay)
         usage = getattr(response, "usage_metadata", None)
         if usage is not None:
             total = getattr(usage, "total_token_count", 0) or 0
