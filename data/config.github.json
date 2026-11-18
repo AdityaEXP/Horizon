@@ -81,7 +81,7 @@
       },
       {
         "name": "Lobsters",
-        "url": "https://lobste.rs/top/rss",
+        "url": "https://lobste.rs/rss",
         "enabled": true,
         "category": "backend",
         "profile": "builder"
