@@ -14,15 +14,11 @@
   },
   "processing": {
     "profiles_dir": "profiles",
-    "default_profile": "tech-news",
+    "default_profile": "builder",
     "profile_settings": {
-      "tech-news": {
-        "threshold": 7.5,
+      "builder": {
+        "threshold": 6.5,
         "topic_dedup": true
-      },
-      "tech-blog": {
-        "threshold": 6.0,
-        "topic_dedup": false
       }
     }
   },
@@ -34,8 +30,8 @@
       "enabled": true,
       "fetch_top_stories": 30,
       "min_score": 200,
-      "category": "hn",
-      "profile": "tech-news"
+      "category": "headlines",
+      "profile": "builder"
     },
     "rss": [
       {
@@ -43,28 +39,28 @@
         "url": "https://simonwillison.net/atom/everything/",
         "enabled": true,
         "category": "ai-tools",
-        "profile": "tech-news"
+        "profile": "builder"
       },
       {
         "name": "Latent Space",
         "url": "https://www.latent.space/feed",
         "enabled": true,
         "category": "ai-tools",
-        "profile": "tech-news"
+        "profile": "builder"
       },
       {
         "name": "GitHub Trending - Daily",
         "url": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml",
         "enabled": true,
-        "category": "github-trending",
-        "profile": "tech-news"
+        "category": "money",
+        "profile": "builder"
       },
       {
         "name": "The Pragmatic Engineer",
         "url": "https://newsletter.pragmaticengineer.com/feed",
         "enabled": true,
-        "category": "backend",
-        "profile": "tech-blog",
+        "category": "career",
+        "profile": "builder",
         "content_extractor": "trafilatura"
       },
       {
@@ -72,7 +68,7 @@
         "url": "https://blog.bytebytego.com/feed",
         "enabled": true,
         "category": "backend",
-        "profile": "tech-blog",
+        "profile": "builder",
         "content_extractor": "trafilatura"
       },
       {
@@ -80,7 +76,7 @@
         "url": "https://www.seangoedecke.com/rss.xml",
         "enabled": true,
         "category": "backend",
-        "profile": "tech-blog",
+        "profile": "builder",
         "content_extractor": "trafilatura"
       },
       {
@@ -88,7 +84,21 @@
         "url": "https://lobste.rs/rss",
         "enabled": true,
         "category": "backend",
-        "profile": "tech-news"
+        "profile": "builder"
+      },
+      {
+        "name": "Show HN",
+        "url": "https://hnrss.org/show?points=100",
+        "enabled": true,
+        "category": "money",
+        "profile": "builder"
+      },
+      {
+        "name": "Ask HN",
+        "url": "https://hnrss.org/ask?points=50",
+        "enabled": true,
+        "category": "career",
+        "profile": "builder"
       }
     ],
     "reddit": {
@@ -102,7 +112,7 @@
           "fetch_limit": 10,
           "min_score": 150,
           "category": "career",
-          "profile": "tech-news"
+          "profile": "builder"
         },
         {
           "subreddit": "SaaS",
@@ -112,7 +122,7 @@
           "fetch_limit": 10,
           "min_score": 50,
           "category": "saas",
-          "profile": "tech-news"
+          "profile": "builder"
         },
         {
           "subreddit": "LocalLLaMA",
@@ -122,7 +132,7 @@
           "fetch_limit": 10,
           "min_score": 150,
           "category": "ai-tools",
-          "profile": "tech-news"
+          "profile": "builder"
         }
       ],
       "users": [],
@@ -133,34 +143,44 @@
     "time_window_hours": 24
   },
   "digest": {
-    "max_items": 15,
+    "max_items": 12,
     "profile_order": [
-      "tech-news",
-      "tech-blog"
+      "builder"
     ],
     "category_groups": {
       "ai": {
-        "limit": 5,
+        "limit": 4,
         "categories": [
           "ai-tools"
         ]
       },
       "backend": {
-        "limit": 4,
+        "limit": 3,
         "categories": [
           "backend"
         ]
       },
-      "business": {
+      "money": {
         "limit": 3,
         "categories": [
-          "saas",
+          "money"
+        ]
+      },
+      "career": {
+        "limit": 3,
+        "categories": [
           "career"
+        ]
+      },
+      "headlines": {
+        "limit": 3,
+        "categories": [
+          "headlines"
         ]
       }
     },
     "default_group": "other",
-    "default_group_limit": 4
+    "default_group_limit": 2
   },
   "webhook": {
     "enabled": true,
