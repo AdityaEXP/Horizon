@@ -20,6 +20,7 @@ from .services.wechat import WeChatNotifier
 from .scrapers.base import BaseScraper
 from .scrapers.github import GitHubScraper
 from .scrapers.hackernews import HackerNewsScraper
+from .scrapers.codeforces import CodeforcesScraper
 from .scrapers.rss import RSSScraper
 from .scrapers.reddit import RedditScraper
 from .scrapers.telegram import TelegramScraper
@@ -466,6 +467,12 @@ class HorizonOrchestrator:
             if self.config.sources.hackernews.enabled:
                 hn_scraper = HackerNewsScraper(self.config.sources.hackernews, client)
                 tasks.append(self._fetch_with_progress("Hacker News", hn_scraper, since))
+
+            # Codeforces blogs
+            cf_config = getattr(self.config.sources, "codeforces", None)
+            if cf_config and cf_config.enabled:
+                cf_scraper = CodeforcesScraper(cf_config, client)
+                tasks.append(self._fetch_with_progress("Codeforces", cf_scraper, since))
 
             # RSS feeds
             if self.config.sources.rss:

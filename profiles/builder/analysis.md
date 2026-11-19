@@ -7,7 +7,8 @@ Score how useful this item is to one specific reader: a computer-engineering stu
 1. **Backend, infra and AI tools they can use.** New or significantly updated APIs, frameworks, databases, cloud services, AI models and agent tooling; meaningful pricing or capability changes; practical engineering deep-dives on building, scaling or running backend systems, data pipelines and automation.
 2. **Ways to make money with code.** Product launches and Show HN projects in automation, bots, developer tools, AI tools or SaaS; indie or bootstrapped business stories with concrete numbers; new platforms or APIs that open a freelance or product opportunity; payments, platform or policy changes that affect people selling software.
 3. **Jobs and the freelance market.** Hiring and layoff trends, salaries and pay data, remote work, skills employers are paying for, interview and career discussions with substance, freelancing rates and client experiences.
-4. **Major tech and AI headlines.** Big launches, model releases and industry moves that any working developer is expected to know about.
+4. **DSA and interview prep that builds real skill.** Clear tutorials on algorithms, data structures and problem-solving techniques; insights into how to practise effectively; online-assessment and interview experiences with concrete questions. Score on how much a reader preparing for placements would learn, not on popularity. Contest announcements, editorials of single rounds, rank-up celebrations, cheating disputes and site drama: 0-3.
+5. **Major tech and AI headlines.** Big launches, model releases and industry moves that any working developer is expected to know about.
 
 # Push down
 

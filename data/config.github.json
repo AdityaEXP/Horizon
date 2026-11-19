@@ -137,6 +137,14 @@
       ],
       "users": [],
       "fetch_comments": 5
+    },
+    "codeforces": {
+      "enabled": true,
+      "min_rating": 20,
+      "max_posts": 6,
+      "delay_hours": 24,
+      "category": "dsa",
+      "profile": "builder"
     }
   },
   "collection": {
@@ -176,6 +184,12 @@
         "limit": 3,
         "categories": [
           "headlines"
+        ]
+      },
+      "dsa": {
+        "limit": 2,
+        "categories": [
+          "dsa"
         ]
       }
     },

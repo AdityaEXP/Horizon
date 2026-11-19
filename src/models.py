@@ -20,6 +20,7 @@ class SourceType(str, Enum):
     OSSINSIGHT = "ossinsight"
     GDELT = "gdelt"
     GOOGLE_NEWS = "google_news"
+    CODEFORCES = "codeforces"
 
 
 class SourceDefinition(NamedTuple):
@@ -41,6 +42,7 @@ SOURCE_REGISTRY = {
     SourceType.OSSINSIGHT.value: SourceDefinition("ossinsight"),
     SourceType.GDELT.value: SourceDefinition("gdelt"),
     SourceType.GOOGLE_NEWS.value: SourceDefinition("google_news"),
+    SourceType.CODEFORCES.value: SourceDefinition("codeforces"),
 }
 
 ProfileRoute = Optional[Union[str, List[str]]]
@@ -266,6 +268,18 @@ class HackerNewsConfig(BaseModel):
     enabled: bool = True
     fetch_top_stories: int = 30
     min_score: int = 100
+    category: Optional[str] = None
+    profile: ProfileRoute = None
+
+
+class CodeforcesConfig(BaseModel):
+    """Codeforces blog posts, via the official API."""
+
+    enabled: bool = False
+    min_rating: int = 20
+    max_posts: int = 8
+    delay_hours: int = Field(default=24, ge=0)
+    exclude_title_patterns: List[str] = Field(default_factory=list)
     category: Optional[str] = None
     profile: ProfileRoute = None
 
@@ -512,6 +526,7 @@ class SourcesConfig(BaseModel):
     ossinsight: OSSInsightConfig = Field(default_factory=OSSInsightConfig)
     gdelt: Optional[GDELTConfig] = None
     google_news: Optional[GoogleNewsConfig] = None
+    codeforces: CodeforcesConfig = Field(default_factory=CodeforcesConfig)
 
 
 class WebhookConfig(BaseModel):
