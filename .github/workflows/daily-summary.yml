@@ -2,9 +2,11 @@ name: Daily Horizon Summary
 
 on:
   schedule:
-    # GitHub cron is UTC. 23:30 UTC = 05:00 IST; GitHub often starts
-    # scheduled runs late, so this aims for the briefing to be ready by ~6-7 AM IST.
-    - cron: '30 23 * * *'
+    # GitHub cron is UTC. Posts are dated by UTC day, so runs must start after
+    # 00:00 UTC (05:30 IST). Odd minutes avoid GitHub's busiest :00/:30 slots,
+    # and the second run is a backup in case GitHub drops the first.
+    - cron: '13 0 * * *'   # ~05:43 IST
+    - cron: '43 2 * * *'   # ~08:13 IST, skipped if today's briefing exists
   workflow_dispatch:      # Allow manual trigger
 
 jobs:
@@ -17,23 +19,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Skip if today's briefing already exists
+        id: check
+        run: |
+          today=$(date -u +%F)
+          if [ "${{ github.event_name }}" = "schedule" ] \
+             && git fetch -q --depth 1 origin gh-pages 2>/dev/null \
+             && git cat-file -e "FETCH_HEAD:_posts/${today}-summary-en.md" 2>/dev/null; then
+            echo "Briefing for ${today} already published; skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Python
+        if: steps.check.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install uv
+        if: steps.check.outputs.skip != 'true'
         uses: astral-sh/setup-uv@v6
         with:
           version: "0.11.26"
 
       - name: Install dependencies
+        if: steps.check.outputs.skip != 'true'
         run: uv sync
 
       - name: Prepare GitHub Actions config
+        if: steps.check.outputs.skip != 'true'
         run: cp data/config.github.json data/config.json
 
       - name: Run Horizon
+        if: steps.check.outputs.skip != 'true'
         env:
           # Map secrets to environment variables expected by config.json
           # Modify these based on your data/config.github.json provider settings
@@ -45,9 +63,11 @@ jobs:
           uv run horizon --hours 24
 
       - name: Set current date as environment variable
+        if: steps.check.outputs.skip != 'true'
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Deploy to GitHub Pages
+        if: steps.check.outputs.skip != 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
